@@ -1,0 +1,7 @@
+
+ollama
+fastapi
+uvicorn[standard]
+pydantic
+python-dotenv
+psycopg[binary]
