@@ -51,6 +51,57 @@ def parse_psi_investigation(text: str) -> List[PSISection]:
     return sections
 
 
+def extract_references(text: str) -> dict:
+    """Extract DOI references from document text."""
+
+    dois = re.findall(
+        r"\b10\.\d{4,9}/[-._;()/:A-Z0-9]+",
+        text,
+        re.IGNORECASE
+    )
+
+    return {
+        "dois": sorted(set(dois))
+    }
+
+
+def extract_document_metadata(text: str) -> dict:
+    """Extract document metadata from labeled or tab-separated text."""
+
+    metadata = {
+        "title": None,
+        "author": None,
+        "principal_investigator": None
+    }
+
+    for line in text.splitlines():
+        line = line.strip()
+
+        if "\t" in line:
+            field, value = line.split("\t", 1)
+        elif ":" in line:
+            field, value = line.split(":", 1)
+        else:
+            continue
+
+        field = field.strip().lower()
+        value = value.strip()
+
+        if not value:
+            continue
+
+        if field in ("title", "proposal title"):
+            metadata["title"] = value
+
+        elif field in ("author", "authors"):
+            metadata["author"] = value
+
+        elif field == "principal investigator":
+            metadata["principal_investigator"] = value
+
+    return metadata
+
+
 def load_text_document(file_path: str) -> dict:
     path = Path(file_path)
 
@@ -70,15 +121,21 @@ def load_text_document(file_path: str) -> dict:
     if not match:
         match = re.search(r"PSI-\d+", text, re.IGNORECASE)
 
+    document_metadata = extract_document_metadata(text)
+
     document = {
-        "investigation_id": match.group(0).upper() if match else None,
-        "source": path.name,
-        "text": text,
-        "metadata": {
-            "file_type": path.suffix.lower(),
-            "file_size": path.stat().st_size,
-        },
-    }
+    "investigation_id": match.group(0).upper() if match else None,
+    "source": path.name,
+    "text": text,
+    "metadata": {
+        "file_type": path.suffix.lower(),
+        "file_size": path.stat().st_size,
+        "title": document_metadata["title"],
+        "author": document_metadata["author"],
+        "principal_investigator": document_metadata["principal_investigator"],
+    },
+    "references": extract_references(text),
+}
 
     if path.name.lower() == "i_investigation.txt":
         document["sections"] = parse_psi_investigation(text)

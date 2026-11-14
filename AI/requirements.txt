@@ -5,4 +5,16 @@ uvicorn[standard]
 pydantic
 python-dotenv
 psycopg[binary]
+<<<<<<< HEAD
 pypdf
+=======
+
+# PDF processing
+pymupdf
+pdfplumber
+pytesseract
+Pillow
+
+# PowerPoint processing
+python-pptx
+>>>>>>> c0ae252 (Implement TXT PDF PPTX and video ingestion processors)

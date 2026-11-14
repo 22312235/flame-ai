@@ -2,8 +2,12 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from ingestion.document_loader import load_text_document, parse_psi_investigation
-
+from ingestion.document_loader import (
+    load_text_document,
+    parse_psi_investigation,
+    extract_references,
+    extract_document_metadata,
+)
 
 class ParsePSIInvestigationTests(unittest.TestCase):
     def test_preserves_sections_fields_values_and_multiline_content(self):
@@ -160,6 +164,57 @@ class LoadTextDocumentTests(unittest.TestCase):
         self.assertEqual(document["text"], "ordinary text")
         self.assertNotIn("sections", document)
 
+
+class DocumentMetadataTests(unittest.TestCase):
+
+    def test_extracts_doi_references(self):
+        text = """
+        Paper one: 10.1016/j.combustflame.2018.10.012
+        Paper two: 10.1234/example.2025
+        Paper one again: 10.1016/j.combustflame.2018.10.012
+        """
+
+        result = extract_references(text)
+
+        self.assertEqual(
+            result["dois"],
+            [
+                "10.1016/j.combustflame.2018.10.012",
+                "10.1234/example.2025",
+            ],
+        )
+
+    def test_extracts_title_and_author(self):
+        text = (
+            "Title: Flame in Freefall\n"
+            "Author: Jane Smith\n"
+        )
+
+        result = extract_document_metadata(text)
+
+        self.assertEqual(result["title"], "Flame in Freefall")
+        self.assertEqual(result["author"], "Jane Smith")
+
+    def test_extracts_nasa_proposal_title_and_investigator(self):
+        text = (
+            "Proposal Title\tSAFFIRE-I\n"
+            "Principal Investigator\tJane Smith\n"
+        )
+
+        result = extract_document_metadata(text)
+
+        self.assertEqual(result["title"], "SAFFIRE-I")
+        self.assertEqual(
+            result["principal_investigator"],
+            "Jane Smith",
+        )
+
+    def test_returns_none_when_metadata_is_missing(self):
+        result = extract_document_metadata("Some ordinary text.")
+
+        self.assertIsNone(result["title"])
+        self.assertIsNone(result["author"])
+        self.assertIsNone(result["principal_investigator"])
 
 if __name__ == "__main__":
     unittest.main()
