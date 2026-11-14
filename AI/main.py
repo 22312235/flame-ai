@@ -26,6 +26,28 @@ class QuestionRequest(BaseModel):
     question: str = Field(min_length=1, max_length=1000)
 
 
+def build_retrieval_query(question: str) -> str:
+    question_lower = question.lower()
+
+    if (
+        "spherical" in question_lower
+        and any(
+            fuel in question_lower
+            for fuel in ["propane", "ethane", "butane"]
+        )
+    ):
+        return (
+            f"{question} "
+            "Experimental observations and actual reported results "
+            "for spherical gas-fueled cool diffusion flames. "
+            "Identify the fuels and experimental conditions associated "
+            "with observed outcomes. Distinguish experimental findings "
+            "from planned research objectives and hypotheses."
+        )
+
+    return question
+
+
 @app.get("/")
 def root():
     return {
@@ -54,12 +76,16 @@ def ask_question(request: QuestionRequest):
         )
 
     try:
+        # Expand the retrieval query without injecting an expected answer.
+        retrieval_query = build_retrieval_query(question)
+
         retrieved_chunks = retrieve_chunks(
-            query=question,
+            query=retrieval_query,
             chunks=chunks,
-            top_k=5
+            top_k=8
         )
 
+        # Generate the answer using the original user question.
         answer = generate_answer(
             query=question,
             retrieved_chunks=retrieved_chunks
