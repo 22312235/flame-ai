@@ -19,7 +19,7 @@ const nav = [
   ["RESEARCH", "explorer"],
   ["TECHNOLOGY", "technology"],
   ["AI ASSISTANT", "assistant"],
-  ["EXPLORE", "compare"]
+  ["EXPLORE", "insights"]
 ];
 
 export default function App() {
@@ -212,13 +212,19 @@ export default function App() {
       );
     }
 
-    return (
-      <Insights
-        onNavigate={navigate}
-        setQuery={setQuery}
-        setProgram={setProgram}
-      />
-    );
+  if (page === "insights") {
+  return (
+    <Insights
+      records={records}
+      onNavigate={navigate}
+      setQuery={setQuery}
+      setProgram={setProgram}
+    />
+  );
+}
+
+
+return <Home records={records} onNavigate={navigate} />;
   };
 
   const activePage = page.startsWith("detail/")

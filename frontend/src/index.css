@@ -2092,3 +2092,356 @@ body { overflow-x: hidden; }
     padding: 12px;
   }
 }
+
+/* ==========================================
+   FLAME AI — RESEARCH ASSISTANT REDESIGN
+   ========================================== */
+
+.assistant-page.inner-page {
+  width: 100%;
+  max-width: none;
+  padding: 100px 0 70px;
+  background:
+    radial-gradient(ellipse at 75% 25%, #0b263b55, transparent 55%),
+    #030a13;
+}
+
+/* Hero section */
+.assistant-page .assistant-page-visual {
+  width: min(1560px, calc(100% - 80px));
+  height: clamp(300px, 30vw, 430px);
+  margin: 0 auto 48px;
+  border: 1px solid #24516a;
+  border-radius: 4px;
+  box-shadow: 0 24px 80px #0008;
+}
+
+.assistant-page .assistant-page-visual img {
+  object-position: center 45%;
+}
+
+.assistant-page .assistant-page-visual-copy {
+  left: clamp(28px, 6vw, 90px);
+  max-width: 650px;
+}
+
+.assistant-page .assistant-page-visual-copy h2 {
+  font-size: clamp(30px, 4vw, 54px);
+  line-height: 1.35;
+}
+
+.assistant-page .assistant-page-visual-copy p {
+  font-size: 14px;
+  max-width: 520px;
+  line-height: 1.9;
+}
+
+/* Page heading */
+.assistant-page > .page-title {
+  width: min(1560px, calc(100% - 80px));
+  margin: 0 auto 25px;
+}
+
+/* Main two-column workspace */
+.assistant-page .assistant-workspace {
+  width: min(1560px, calc(100% - 80px));
+  margin: 0 auto 70px;
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 22px;
+  align-items: stretch;
+}
+
+/* Research sidebar */
+.assistant-page .assistant-sidebar {
+  padding: 24px 20px;
+  border: 1px solid #24475d;
+  border-radius: 4px;
+  background: linear-gradient(160deg, #0c2030, #07121e);
+}
+
+.assistant-page .assistant-sidebar-heading {
+  padding-bottom: 22px;
+}
+
+.assistant-page .assistant-sidebar-card {
+  padding: 21px 8px;
+  gap: 13px;
+}
+
+.assistant-page .assistant-sidebar-card > svg {
+  width: 23px;
+  height: 23px;
+  flex-shrink: 0;
+  color: #65d5ec;
+}
+
+.assistant-page .assistant-sidebar-card strong {
+  font-size: 10px;
+}
+
+.assistant-page .assistant-sidebar-card span {
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.assistant-page .assistant-sidebar-note {
+  padding: 18px;
+  margin-top: 32px;
+}
+
+/* Chat workspace */
+.assistant-page .chat-shell {
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  min-height: 730px;
+  margin: 0;
+  border: 1px solid #28516a;
+  border-radius: 4px;
+  background: #071421;
+  box-shadow: 0 20px 65px #0006;
+}
+
+.assistant-page .chat-head {
+  min-height: 88px;
+  padding: 20px 25px;
+  background: linear-gradient(100deg, #102a3c, #091927);
+}
+
+.assistant-page .chat-head h3 {
+  font-size: 12px;
+}
+
+.assistant-page .chat-head p {
+  font-size: 10px;
+}
+
+.assistant-page .assistant-symbol {
+  width: 48px;
+  height: 48px;
+}
+
+.assistant-page .chat-head .demo {
+  font-size: 9px;
+  padding: 8px 12px;
+}
+
+.assistant-page .chat-context-bar {
+  padding: 14px 25px;
+  font-size: 10px;
+}
+
+/* Conversation area */
+.assistant-page .chat-messages {
+  flex: 1;
+  height: auto;
+  min-height: 460px;
+  max-height: 620px;
+  padding: 32px;
+  gap: 25px;
+  background:
+    radial-gradient(ellipse at top right, #102b3b33, transparent 60%),
+    #071421;
+}
+
+.assistant-page .message {
+  max-width: 92%;
+  gap: 13px;
+}
+
+.assistant-page .message-avatar {
+  width: 36px;
+  height: 36px;
+}
+
+.assistant-page .message-bubble {
+  max-width: 100%;
+  padding: 20px 23px;
+  border-radius: 3px;
+  background: #102335;
+}
+
+.assistant-page .message.user .message-bubble {
+  background: #10344a;
+}
+
+.assistant-page .message-label {
+  font-size: 10px;
+}
+
+.assistant-page .message-bubble p {
+  margin-top: 12px;
+  font-size: 14px;
+  line-height: 1.9;
+  color: #d2e0e9;
+}
+
+.assistant-page .citation-note {
+  align-items: flex-start;
+  font-size: 10px;
+  line-height: 1.8;
+  padding-top: 13px;
+  margin-top: 15px;
+}
+
+/* Suggested research questions */
+.assistant-page .assistant-prompt-area {
+  padding: 24px 26px;
+  background: #0a1927;
+}
+
+.assistant-page .suggestions-heading {
+  margin-bottom: 18px;
+}
+
+.assistant-page .suggestions-heading > span:last-child {
+  font-size: 9px;
+}
+
+.assistant-page .suggestions {
+  gap: 12px;
+  padding: 0;
+}
+
+.assistant-page .suggestions button {
+  min-height: 105px;
+  padding: 17px;
+  text-align: left;
+  background: linear-gradient(145deg, #10283a, #0a1927);
+  border: 1px solid #25475e;
+  border-radius: 3px;
+  transition: .25s ease;
+}
+
+.assistant-page .suggestions button:hover {
+  background: #15364a;
+  border-color: #5ac9e0;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px #0005;
+}
+
+.assistant-page .suggestions button > svg:first-child {
+  width: 21px;
+  height: 21px;
+  color: #65d5ec;
+}
+
+.assistant-page .suggestions button small {
+  font-size: 9px;
+}
+
+.assistant-page .suggestions button strong {
+  font-size: 11px;
+  line-height: 1.7;
+  color: #dceaf1;
+}
+
+/* Message composer */
+.assistant-page .chat-input {
+  padding: 20px 25px;
+  gap: 12px;
+}
+
+.assistant-page .chat-input input {
+  min-height: 55px;
+  padding: 16px 19px;
+  font-size: 14px;
+  border-color: #294e65;
+  background: #091a28;
+}
+
+.assistant-page .send-button {
+  width: 55px;
+  min-height: 55px;
+  cursor: pointer;
+  transition: .2s ease;
+}
+
+.assistant-page .send-button:hover {
+  background: #8be8f5;
+}
+
+.assistant-page .send-button:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+.assistant-page .chat-disclaimer {
+  padding: 0 25px 20px;
+  font-size: 9px;
+}
+
+/* Tablet */
+@media (max-width: 1000px) {
+  .assistant-page .assistant-workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .assistant-page .assistant-sidebar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  .assistant-page .assistant-sidebar-heading,
+  .assistant-page .assistant-sidebar-note {
+    grid-column: 1 / -1;
+  }
+
+  .assistant-page .assistant-sidebar-card {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .assistant-page .assistant-page-visual,
+  .assistant-page > .page-title,
+  .assistant-page .assistant-workspace {
+    width: calc(100% - 32px);
+  }
+
+  .assistant-page .assistant-page-visual {
+    height: 310px;
+  }
+
+  .assistant-page .assistant-sidebar {
+    grid-template-columns: 1fr;
+  }
+
+  .assistant-page .assistant-sidebar-card {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .assistant-page .chat-shell {
+    min-height: 650px;
+  }
+
+  .assistant-page .chat-messages {
+    min-height: 380px;
+    padding: 20px 13px;
+  }
+
+  .assistant-page .message {
+    max-width: 100%;
+  }
+
+  .assistant-page .message-bubble p {
+    font-size: 13px;
+  }
+
+  .assistant-page .suggestions {
+    grid-template-columns: 1fr;
+  }
+
+  .assistant-page .suggestions button {
+    min-height: 80px;
+  }
+
+  .assistant-page .assistant-sidebar-card {
+    flex-direction: row;
+  }
+}

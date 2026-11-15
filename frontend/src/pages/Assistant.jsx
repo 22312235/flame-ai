@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState } from "react";
 import {
   Sparkles,
   FileText,
@@ -12,6 +12,8 @@ import {
   ArrowUpRight
 } from "lucide-react";
 import { PageTitle } from "../components/Shared";
+
+const API_URL = "http://127.0.0.1:8000";
 
 const prompts = [
   {
@@ -37,23 +39,69 @@ export default function Assistant({
   question,
   setQuestion
 }) {
-  function ask(e) {
+  const [isLoading, setIsLoading] = useState(false);
+
+  async function ask(e) {
     e.preventDefault();
 
-    if (!question.trim()) return;
-
     const q = question.trim();
+
+    if (!q || isLoading) return;
+
+    setQuestion("");
+    setIsLoading(true);
 
     setMessages(current => [
       ...current,
       { role: "user", text: q },
       {
         role: "assistant",
-        text: `This prototype is not connected to the NASA research index or a verified AI model yet. To investigate "${q}", start with the Investigation Explorer and review the relevant PSI records. Once the backend and retrieval system are connected, this assistant can provide evidence-based answers with source citations.`
+        text: "Searching NASA research documents and analyzing evidence...",
+        loading: true
       }
     ]);
 
-    setQuestion("");
+    try {
+      const response = await fetch(`${API_URL}/ask`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          question: q
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.detail || "The AI service could not process your question."
+        );
+      }
+
+      setMessages(current => [
+        ...current.slice(0, -1),
+        {
+          role: "assistant",
+          text: data.answer,
+          sources: data.sources || []
+        }
+      ]);
+
+    } catch (error) {
+      setMessages(current => [
+        ...current.slice(0, -1),
+        {
+          role: "assistant",
+          text: `Unable to contact FLAME AI: ${error.message}`,
+          error: true
+        }
+      ]);
+
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -91,7 +139,7 @@ export default function Assistant({
       <PageTitle
         eyebrow="04 / KNOWLEDGE DISCOVERY"
         title={<>AI RESEARCH <em>ASSISTANT</em></>}
-        desc="A conversational research interface concept designed to make complex combustion investigations easier to explore and understand."
+        desc="Explore combustion research through AI-powered document retrieval and evidence-based answers."
       />
 
       <section className="assistant-workspace">
@@ -107,16 +155,16 @@ export default function Assistant({
             <Database size={21} />
             <div>
               <strong>NASA RESEARCH DATA</strong>
-              <span>Investigation records</span>
+              <span>Indexed research documents</span>
             </div>
-            <span className="sidebar-status">DEMO</span>
+            <span className="sidebar-status">ACTIVE</span>
           </div>
 
           <div className="assistant-sidebar-card">
             <Search size={21} />
             <div>
               <strong>SEMANTIC SEARCH</strong>
-              <span>Planned retrieval feature</span>
+              <span>AI-powered retrieval</span>
             </div>
           </div>
 
@@ -124,7 +172,7 @@ export default function Assistant({
             <ShieldCheck size={21} />
             <div>
               <strong>SOURCE TRACEABILITY</strong>
-              <span>Citations planned</span>
+              <span>Document and page citations</span>
             </div>
           </div>
 
@@ -150,11 +198,13 @@ export default function Assistant({
               <h3>FLAME AI / RESEARCH COPILOT</h3>
               <p>
                 <i className="live-dot" />
-                DEMO MODE · BACKEND NOT CONNECTED
+                AI RESEARCH SERVICE
               </p>
             </div>
 
-            <span className="demo">PROTOTYPE</span>
+            <span className="demo">
+              {isLoading ? "PROCESSING" : "AI POWERED"}
+            </span>
           </div>
 
           <div className="chat-context-bar">
@@ -166,6 +216,7 @@ export default function Assistant({
           </div>
 
           <div className="chat-messages">
+
             {messages.map((message, index) => (
               <div
                 key={index}
@@ -178,6 +229,7 @@ export default function Assistant({
                 </div>
 
                 <div className="message-bubble">
+
                   <span className="message-label">
                     {message.role === "assistant"
                       ? "FLAME AI"
@@ -186,62 +238,107 @@ export default function Assistant({
 
                   <p>{message.text}</p>
 
-                  {message.role === "assistant" && index > 0 && (
+                  {message.loading && (
                     <div className="citation-note">
-                      <FileText size={12} />
-                      Source citations unavailable in demo mode
+                      <Search size={12} />
+                      Retrieving relevant research evidence...
                     </div>
                   )}
+
+                  {message.error && (
+                    <div className="citation-note">
+                      <ShieldCheck size={12} />
+                      Check that the AI server is running.
+                    </div>
+                  )}
+
+                  {message.sources?.length > 0 && (
+                    <div className="citation-note">
+                      <FileText size={12} />
+
+                      <span>
+                        **RESEARCH SOURCES**
+
+                        {message.sources.map((source, i) => (
+                          <span key={i}>
+                            {source.source}, Page {source.page}
+                            {source.similarity !== undefined
+                              ? ` (Relevance: ${(source.similarity * 100).toFixed(1)}%)`
+                              : ""}
+                            {i < message.sources.length - 1
+                              ? " · "
+                              : ""}
+                          </span>
+                        ))}
+                      </span>
+                    </div>
+                  )}
+
                 </div>
               </div>
             ))}
+
           </div>
 
           <div className="assistant-prompt-area">
+
             <div className="suggestions-heading">
               <span className="overline">START YOUR RESEARCH</span>
               <span>SELECT A QUESTION</span>
             </div>
 
             <div className="suggestions">
+
               {prompts.map(({ icon: Icon, category, question: prompt }) => (
                 <button
                   key={prompt}
                   type="button"
-                  onClick={() => setQuestion(prompt)}
+                  disabled={isLoading}
+                  onClick={() => {
+                    setQuestion(prompt);
+                   ask({
+                     preventDefault: () => {}
+                     });
+}}
                 >
                   <Icon size={17} />
+
                   <span>
                     <small>{category}</small>
                     <strong>{prompt}</strong>
                   </span>
+
                   <ArrowUpRight size={14} />
                 </button>
               ))}
+
             </div>
           </div>
 
           <form className="chat-input" onSubmit={ask}>
+
             <input
               value={question}
               onChange={e => setQuestion(e.target.value)}
               placeholder="Ask about microgravity combustion research..."
               aria-label="Ask a research question"
+              disabled={isLoading}
             />
 
             <button
               className="send-button"
               type="submit"
-              disabled={!question.trim()}
+              disabled={!question.trim() || isLoading}
               aria-label="Send question"
             >
               <Send size={16} />
             </button>
+
           </form>
 
           <div className="chat-disclaimer">
             <ShieldCheck size={12} />
-            AI-GENERATED RESEARCH RESPONSES WILL REQUIRE VERIFIED SOURCES
+            AI-GENERATED RESPONSES WITH RETRIEVED RESEARCH SOURCES
           </div>
 
         </section>

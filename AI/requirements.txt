@@ -4,17 +4,23 @@ fastapi
 uvicorn[standard]
 pydantic
 python-dotenv
+
+# Database
+SQLAlchemy
 psycopg[binary]
-<<<<<<< HEAD
-pypdf
-=======
+
+# Data processing
+pandas
+numpy
+openpyxl
+xlrd
 
 # PDF processing
-pymupdf
+PyMuPDF
 pdfplumber
+pypdf
 pytesseract
 Pillow
 
 # PowerPoint processing
 python-pptx
->>>>>>> c0ae252 (Implement TXT PDF PPTX and video ingestion processors)

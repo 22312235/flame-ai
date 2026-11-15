@@ -1,14 +1,18 @@
+from pathlib import Path
 
 from ingestion.pdf_loader import load_pdf_document
 from rag.chunker import chunk_documents
 from rag.embedder import embed_chunks
 from rag.vector_store import save_chunks
 
+BASE_DIR = Path(__file__).resolve().parent
 
-PDF_PATH = r"C:\Users\User\Downloads\PSI-159_Reports_FinalRpt_ACME.CFI-G.pdf"
-STORE_PATH = "AI/storage/psi159_vector_store.json"
+PDF_PATH = Path.home() / "Downloads" / "PSI-159_Reports_FinalRpt_ACME.CFI-G.pdf"
+STORE_PATH = BASE_DIR / "storage" / "psi159_vector_store.json"
+
+STORE_PATH.parent.mkdir(parents=True, exist_ok=True)
+
 BATCH_SIZE = 16
-
 
 print("Loading PDF...")
 pages = load_pdf_document(PDF_PATH)

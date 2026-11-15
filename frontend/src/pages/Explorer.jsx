@@ -17,7 +17,6 @@ import {
   GitCompareArrows
 } from "lucide-react";
 import { PageTitle, Status } from "../components/Shared";
-
 export default function Explorer({
   records,
   query,
@@ -170,6 +169,7 @@ export default function Explorer({
         </div>
 
       </section>
+
 
       {/* FILTERS */}
       <div className="explorer-toolbar-label">

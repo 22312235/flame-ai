@@ -8,17 +8,18 @@ from typing import Any
 from sqlalchemy.orm import Session
 from uuid import UUID
 
-from processing.document_loader import load_text_document
-from processing.pdf_processor import process_pdf
-from processing.pptx_processor import process_pptx
+from ingestion.document_loader import load_text_document
+from ingestion.pdf_processor import process_pdf
+from ingestion.pptx_processor import process_pptx
+from ingestion.video_processor import process_video
+
 from processing.tabular_processor import process_tabular_file
 from processing.image_processor import process_image_file
-from processing.video_processor import process_video
 
-from database.ingestion.document_ingestion import DocumentIngestion
-from database.ingestion.numerical_ingestion import NumericalIngestion
-from database.ingestion.image_ingestion import ImageIngestion
-from database.ingestion.video_ingestion import VideoIngestion
+from ingestion.document_ingestion import DocumentIngestion
+from ingestion.numerical_ingestion import NumericalIngestion
+from ingestion.image_ingestion import ImageIngestion
+from ingestion.video_ingestion import VideoIngestion
 
 from orchestration.processor_registry import (
     ProcessorRegistry,

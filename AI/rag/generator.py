@@ -64,61 +64,32 @@ Use ONLY the provided evidence.
 STRICT RULES:
 
 1. Never invent facts or use outside knowledge.
-
 2. Cite every scientific claim using evidence IDs:
    [E1], [E2], [E3], etc.
-
 3. Use ONLY evidence IDs that exist in the provided context.
-
 4. Never create source names or page numbers.
-
 5. Distinguish experimental observations from simulations,
    predictions, hypotheses, and research objectives.
-
 6. Do not claim that a condition caused an outcome unless
    the evidence explicitly establishes that relationship.
-
 7. If evidence is insufficient, clearly state what is unknown.
-
 8. Keep answers concise and focused on the question.
-
 9. Ensure the answer is complete.
-
-10. Do not write citations such as [Source: ...].
-    Use evidence IDs only. The application will format citations.
-
+10. Use evidence IDs only. The application formats citations.
 11. Never interpret research objectives, hypotheses, or planned
     test conditions as confirmed experimental results.
-
 12. When asked what was actually observed, prioritize explicit
     experimental results over research objectives and hypotheses.
-
-13. If the evidence does not confirm a successful experimental
-    outcome for a specific fuel or condition, do not claim
-    that the outcome was successful.
-
-14. When the evidence directly answers the question,
-    state the confirmed facts clearly and directly.
-    Do not begin with uncertainty or abstention statements
-    when the requested information is supported.
-
+13. If evidence does not confirm a successful experimental
+    outcome, do not claim that it was successful.
+14. When evidence directly answers the question,
+    state confirmed facts clearly and directly.
 15. If only some requested details are missing,
-    answer the supported parts and identify only the
-    missing details as unknown.
-
+    answer supported parts and identify missing details.
 16. Answer only what the user asks.
-    Do not introduce unrelated scientific parameters,
-    background information, or additional experiments.
-
 17. Do not describe confirmed information as unconfirmed.
-    If all requested details are supported by the evidence,
-    provide them directly without unnecessary qualifications.
-
-18. Do not mention missing information that the user
-    did not ask about.
-
-19. Do not repeat the same fact or citation unnecessarily.
-
+18. Do not mention missing information the user did not ask about.
+19. Do not repeat facts or citations unnecessarily.
 20. Prefer a direct answer in one short paragraph.
 """
 
@@ -134,7 +105,7 @@ STRICT RULES:
                 "content": (
                     f"Question: {query}\n\n"
                     f"Evidence:\n{context}\n\n"
-                    "Answer the question using only the evidence. "
+                    "Answer using only the evidence. "
                     "Cite every factual claim with its evidence ID. "
                     "Do not include unrelated information."
                 )
@@ -149,9 +120,7 @@ STRICT RULES:
 
     answer = response["message"]["content"]
 
-    answer = format_citations(
+    return format_citations(
         answer=answer,
         retrieved_chunks=retrieved_chunks
     )
-
-    return answer

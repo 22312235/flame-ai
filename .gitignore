@@ -223,3 +223,6 @@ __marimo__/
 AI/storage/
 # Generated RAG vector stores
 AI/storage/
+
+# Frontend dependencies
+node_modules/

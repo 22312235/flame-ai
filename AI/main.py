@@ -7,6 +7,7 @@ from pydantic import BaseModel, Field
 from rag.vector_store import load_chunks
 from rag.retriever import retrieve_chunks
 from rag.generator import generate_answer
+from fastapi.middleware.cors import CORSMiddleware
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -17,9 +18,27 @@ app = FastAPI(
     description="NASA Combustion Research Assistant",
     version="0.1.0"
 )
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+# Load the vector store if it exists.
+chunks = []
+index_error = None
 
-# Load the vector store once when the API starts.
-chunks = load_chunks(str(STORE_PATH))
+if STORE_PATH.exists():
+    try:
+        chunks = load_chunks(str(STORE_PATH))
+    except Exception as error:
+        index_error = str(error)
 
 
 class QuestionRequest(BaseModel):
@@ -59,8 +78,9 @@ def root():
 @app.get("/health")
 def health():
     return {
-        "status": "healthy",
-        "indexed_chunks": len(chunks)
+        "status": "healthy" if chunks else "degraded",
+        "indexed_chunks": len(chunks),
+        "index_ready": len(chunks) > 0
     }
 
 
@@ -75,8 +95,13 @@ def ask_question(request: QuestionRequest):
             detail="Question cannot be empty."
         )
 
+    if not chunks:
+        raise HTTPException(
+            status_code=503,
+            detail="Research index is not ready. Please try again later."
+        )
+
     try:
-        # Expand the retrieval query without injecting an expected answer.
         retrieval_query = build_retrieval_query(question)
 
         retrieved_chunks = retrieve_chunks(
@@ -85,7 +110,12 @@ def ask_question(request: QuestionRequest):
             top_k=8
         )
 
-        # Generate the answer using the original user question.
+        if not retrieved_chunks:
+            raise HTTPException(
+                status_code=404,
+                detail="No relevant research passages were found."
+            )
+
         answer = generate_answer(
             query=question,
             retrieved_chunks=retrieved_chunks
@@ -104,8 +134,11 @@ def ask_question(request: QuestionRequest):
             ]
         }
 
-    except Exception as error:
+    except HTTPException:
+        raise
+
+    except Exception:
         raise HTTPException(
             status_code=500,
-            detail=str(error)
+            detail="An error occurred while processing your question."
         )
