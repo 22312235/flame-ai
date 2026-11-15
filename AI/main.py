@@ -2,12 +2,13 @@
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 from rag.vector_store import load_chunks
 from rag.retriever import retrieve_chunks
 from rag.generator import generate_answer
-from fastapi.middleware.cors import CORSMiddleware
+from api.catalog import router as catalog_router
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -18,6 +19,7 @@ app = FastAPI(
     description="NASA Combustion Research Assistant",
     version="0.1.0"
 )
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -30,7 +32,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-# Load the vector store if it exists.
+
+# Load the vector store safely.
 chunks = []
 index_error = None
 
@@ -39,6 +42,9 @@ if STORE_PATH.exists():
         chunks = load_chunks(str(STORE_PATH))
     except Exception as error:
         index_error = str(error)
+
+# Register the catalogue API from the team.
+app.include_router(catalog_router)
 
 
 class QuestionRequest(BaseModel):
@@ -80,13 +86,14 @@ def health():
     return {
         "status": "healthy" if chunks else "degraded",
         "indexed_chunks": len(chunks),
-        "index_ready": len(chunks) > 0
+        "index_ready": len(chunks) > 0,
+        "rag_available": bool(chunks),
+        "index_error": index_error
     }
 
 
 @app.post("/ask")
 def ask_question(request: QuestionRequest):
-
     question = request.question.strip()
 
     if not question:

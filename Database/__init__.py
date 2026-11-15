@@ -1,4 +1,4 @@
-from database.connection import (
+from .connection import (
     engine,
     SessionLocal,
     get_db,
