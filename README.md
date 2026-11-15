@@ -2,7 +2,7 @@
 ### Fire Learning and Analysis for Microgravity Experiments
 
 <p align="center">
-  <strong>Turning NASA's Microgravity Combustion Research into Actionable Scientific Insights.</strong>
+  <strong>Making NASA microgravity combustion research easier to discover, explore, compare, and understand.</strong>
 </p>
 
 <p align="center">
@@ -13,55 +13,55 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/React-20232A?style=flat-square&logo=react&logoColor=61DAFB"/>
+  <img src="https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=vite&logoColor=white"/>
   <img src="https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white"/>
   <img src="https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white"/>
-  <img src="https://img.shields.io/badge/MySQL-4479A1?style=flat-square&logo=mysql&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white"/>
-  <img src="https://img.shields.io/badge/FAISS-Vector_Search-7B61FF?style=flat-square"/>
+  <img src="https://img.shields.io/badge/PostgreSQL-4169E1?style=flat-square&logo=postgresql&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Ollama-Local%20AI-black?style=flat-square"/>
 </p>
 
 ---
 
 ## 🌌 Overview
 
-**FLAME AI** is an AI-powered research and analytics platform designed to make microgravity combustion research more accessible, searchable, and understandable.
+**FLAME AI** is an AI-powered research exploration platform developed for **NASA Space Apps Challenge 2026 — Challenge 07: Flame in Freefall**.
 
-Developed for **NASA Space Apps Challenge 2026 — Challenge 07: Flame in Freefall**, the project addresses the challenge of exploring extensive scientific datasets and research documents related to combustion in microgravity environments.
+The platform aims to make NASA's microgravity combustion research more accessible by bringing together a searchable investigation catalogue, research visualizations, experiment comparison, and an AI research assistant.
 
-By combining data engineering, scientific visualization, and Retrieval-Augmented Generation (RAG), FLAME AI aims to help researchers explore experiments, compare combustion conditions, discover documented findings, and investigate their implications for spacecraft fire safety.
+The AI assistant uses Retrieval-Augmented Generation (RAG) to retrieve relevant passages from indexed research documents and generate answers with source and page references.
 
 Our mission is to transform complex scientific information into accessible, evidence-based research insights.
 
 ## 🚀 The Problem
 
-Combustion behaves differently in microgravity than it does under Earth's gravity. Understanding these differences is important for spacecraft fire safety and future space exploration.
+Fire behaves differently in microgravity. Reduced buoyancy-driven convection can change flame shape, transport, and combustion-product behavior. Understanding these differences is important for spacecraft fire safety and future space exploration.
 
-NASA has accumulated extensive microgravity combustion research data, including experiment records, measurements, technical reports, and supporting documentation.
+NASA research includes experiment records, technical reports, publications, and datasets. Finding relevant information across these sources and distinguishing measured observations from hypotheses or interpretations can be difficult.
 
-However, navigating large collections of heterogeneous scientific information can be challenging.
+Researchers need ways to:
 
-Researchers need an accessible way to:
-
-- Discover relevant combustion experiments.
-- Explore experimental conditions and measurements.
-- Compare results across investigations.
-- Retrieve relevant information from scientific documents.
-- Understand documented observations and research gaps.
+- Discover relevant combustion investigations.
+- Search research records and documents.
+- Understand the context and conditions of experiments.
+- Compare investigations without mixing incompatible conditions.
+- Trace answers back to original sources.
+- Identify gaps and limitations in available information.
 
 ## 💡 Our Solution
 
-FLAME AI brings experiment exploration, scientific data analysis, and AI-assisted research into one integrated platform.
+FLAME AI brings experiment exploration, research visualization, comparison, and AI-assisted research into one interface.
 
 ### ✨ Core Features
 
 | Feature | Description |
 |---|---|
-| 🌍 Mission Overview | Explore indexed experiments, research programs, and data availability through an interactive dashboard. |
-| 🔬 Experiment Explorer | Search and filter combustion experiments using available metadata and experimental conditions. |
-| 🤖 AI Research Assistant | Ask natural-language questions and retrieve evidence-based answers from indexed NASA research documents. |
-| 📊 Comparison Lab | Compare experiment conditions, measurements, and documented observations. |
-| 🔥 Fire Safety Insights | Explore scientific observations, research patterns, and potential implications for spacecraft fire safety. |
-| 🧪 Data Quality Monitor | Identify missing values, processing status, and limitations in the available datasets. |
+| 🌍 Mission Overview | Explore the platform and its research collection. |
+| 🔬 Research Explorer | Search, filter, and sort combustion investigation records using available metadata. |
+| 📊 Research Analytics | Visualize catalogue distributions by research program, year, type, and status. |
+| 🤖 AI Research Assistant | Ask natural-language questions and retrieve relevant passages from indexed research documents. |
+| 🔍 Comparison | Select investigations and compare their available metadata and documented information. |
+| 🔥 Fire Safety Insights | Explore research themes and navigate to related investigations. |
+| 🧪 Data Quality | Examine record availability and processing status. |
 
 ## 🧠 AI-Powered Research
 
@@ -70,291 +70,329 @@ FLAME AI uses a Retrieval-Augmented Generation (RAG) approach to ground AI respo
 ### How it works
 
 ```text
-         NASA Research Documents
-                    |
-                    v
-             Text Extraction
-                    |
-                    v
-              Text Chunking
-                    |
-                    v
-             Embedding Model
-                    |
-                    v
-             FAISS Vector Index
-                    |
-                    v
-              Semantic Search
-                    |
-                    v
-          Relevant Research Evidence
-                    |
-                    v
-              Language Model
-                    |
-                    v
-          Evidence-Based AI Answer
-                    |
-                    v
-          Sources and Citations
+        NASA Research Documents
+                  |
+                  v
+            Text Extraction
+                  |
+                  v
+             Text Chunking
+                  |
+                  v
+          Embedding Generation
+                  |
+                  v
+              Vector Store
+                  |
+                  v
+            Semantic Search
+                  |
+                  v
+        Relevant Research Evidence
+                  |
+                  v
+           Language Model
+                  |
+                  v
+        Evidence-Based AI Answer
+                  |
+                  v
+           Sources and Pages
 ```
 
-The assistant is designed to distinguish between documented experimental observations, conclusions from original research, and AI-generated interpretations.
+### Current AI components
 
-It should also communicate when available evidence is insufficient to answer a question.
+- **FastAPI** — exposes the research assistant through HTTP endpoints.
+- **Ollama** — runs local language and embedding models.
+- **Qwen 3.5 4B** — configured local generation model in the development environment.
+- **nomic-embed-text** — embedding model.
+- **RAG** — retrieval-grounded question answering.
+- **JSON vector store** — stores the current indexed research chunks.
+
+The assistant is designed to distinguish between documented experimental observations, original research conclusions, and AI-generated interpretations. It should also communicate when available evidence is insufficient.
 
 ## 🏗️ System Architecture
 
 ```text
-                 NASA DATA SOURCES
+                NASA RESEARCH SOURCES
                          |
-          +--------------+--------------+
-          |              |              |
-       NASA PSI       NASA NTRS     Supplied NASA
-      Repository     Publications    Data Archive
-          |              |              |
-          +--------------+--------------+
+                         v
+             DOCUMENTS & CATALOGUE DATA
                          |
-                  DATA ENGINEERING
+           +-------------+-------------+
+           |                           |
+           v                           v
+    CATALOGUE / API              DOCUMENT INGESTION
+           |                           |
+           v                           v
+    Structured Records              Text Chunks
+           |                           |
+           v                           v
+    Research Explorer              Embeddings
+    Catalogue Analytics                |
+    Comparison                         v
+                                  Vector Store
+                                       |
+                                       v
+                                  RAG Retrieval
+                                       |
+                                       v
+                                   Local LLM
+                                       |
+                                       v
+                                 AI Responses
+           |                           |
+           +-------------+-------------+
                          |
-             Python Extraction & Cleaning
+                         v
+                   REACT FRONTEND
                          |
-          +--------------+--------------+
-          |              |              |
-        MySQL         Parquet       File Storage
-      Metadata       Datasets      Original Files
-          |              |              |
-          +--------------+--------------+
+       +-----------------+-----------------+
+       |                 |                 |
+       v                 v                 v
+    Explorer          Analytics       AI Assistant
+       |                 |                 |
+       +-----------------+-----------------+
                          |
-                   AI ENGINE
-                         |
-              Embeddings + FAISS
-                         |
-                  RAG Pipeline
-                         |
-                   FastAPI
-                         |
-                  React Frontend
-                         |
-          +--------------+--------------+
-          |              |              |
-       Explorer      AI Assistant    Analytics
-          |              |              |
-          +--------------+--------------+
-                         |
-                  FLAME AI DASHBOARD
+                         v
+                     FLAME AI
 ```
+
+The catalogue API and AI assistant are separate backend responsibilities within the repository. Their final integration with the frontend is an ongoing team task.
 
 ## 🛠️ Technology Stack
 
 ### Frontend
-- **React.js** — Component-based user interface.
-- **Vite** — Frontend development and build tooling.
-- **Tailwind CSS** — Responsive interface styling.
-- **Plotly.js** — Interactive scientific visualizations.
+- **React** — component-based user interface.
+- **Vite** — frontend development and build tooling.
+- **JavaScript / JSX** — application logic.
+- **CSS** — custom interface styling.
+- **Lucide React** — interface icons.
 
-### Backend
-- **Python** — Core backend and data processing language.
+### Backend and APIs
+- **Python** — backend and data processing.
 - **FastAPI** — REST API development.
-- **MySQL 8** — Relational database for experiment metadata and structured records.
-
-### Data Engineering
-- **Pandas** — Data extraction, transformation, and cleaning.
-- **PyArrow** — Efficient columnar data processing.
-- **Parquet** — Storage format for processed datasets.
+- **Pydantic** — request and data validation.
+- **PostgreSQL** — relational database technology used by the project database components.
 
 ### Artificial Intelligence
-- **Sentence Transformers** — Text embeddings.
-- **FAISS** — Vector similarity search.
-- **RAG** — Evidence-grounded question answering.
-- **LLM API or local model** — Natural-language research assistance.
+- **Ollama** — local model runtime.
+- **Qwen 3.5 4B** — local answer-generation model in the development setup.
+- **nomic-embed-text** — text embedding model.
+- **RAG** — evidence-grounded question answering.
+- **JSON vector store** — persistence for indexed document chunks.
+
+> The project is evolving. This list describes the technologies identified in the current implementation; it does not imply that every planned integration is complete or deployed.
 
 ## 📂 Repository Structure
 
 ```text
 flame-ai/
 │
-├── frontend/                 # React dashboard
+├── AI/
+│   ├── api/                    # Catalogue and other API modules
+│   ├── analysis/               # Analysis utilities
+│   ├── catalog/                # Investigation catalogue logic
+│   ├── ingestion/              # Document ingestion
+│   ├── orchestration/          # Processing orchestration
+│   ├── rag/                    # Chunking, embeddings, retrieval, generation
+│   ├── repositories/           # Data access components
+│   ├── schemas/                # Data schemas
+│   ├── services/               # Backend services
+│   ├── storage/                # Local generated index
+│   ├── build_index.py          # Build document index
+│   ├── main.py                 # FastAPI application
+│   └── requirements.txt        # Python dependencies
+│
+├── frontend/
 │   ├── public/
 │   └── src/
-│       ├── assets/
-│       ├── components/
-│       ├── layouts/
-│       ├── pages/
-│       ├── services/
-│       └── App.jsx
+│       ├── components/         # Shared UI components
+│       ├── data/               # Frontend catalogue data
+│       ├── pages/              # Home, Explorer, Insights, Assistant, etc.
+│       ├── App.jsx             # Application navigation
+│       └── index.css           # Global styling
 │
-├── backend/                  # FastAPI application
-│   ├── app/
-│   │   ├── api/
-│   │   ├── core/
-│   │   ├── database/
-│   │   ├── models/
-│   │   ├── schemas/
-│   │   ├── services/
-│   │   └── main.py
-│   └── tests/
-│
-├── data-engine/              # NASA data processing
-│   ├── scripts/
-│   ├── extract/
-│   ├── cleaning/
-│   └── validation/
-│
-├── ai-engine/                # AI and RAG pipeline
-│   ├── embeddings/
-│   ├── retrieval/
-│   ├── vector_store/
-│   └── assistant/
-│
-├── sample-data/              # Authorized demo samples
-│
-├── docs/                     # Technical documentation
-│   ├── architecture/
-│   ├── database/
-│   └── api/
-│
-├── .github/                  # GitHub workflows and templates
-│
-├── .env.example
-├── .gitignore
-├── LICENSE
+├── Database/                   # Database-related files
+├── tests/                      # Backend tests
+├── pytest.ini
 └── README.md
 ```
 
 ## 📡 NASA Data Sources
 
-Our project is designed around NASA scientific research and supporting documentation.
+The project is designed around NASA scientific research and supporting documentation.
 
 | Source | Purpose |
 |---|---|
-| [NASA Physical Sciences Informatics (PSI)](https://psi.nasa.gov/physci/repo/) | Primary source for physical-science experiment records and datasets. |
-| [NASA Technical Reports Server (NTRS)](https://ntrs.nasa.gov/) | Scientific reports, publications, and supporting research. |
-| [NASA Science Data Resources](https://science.nasa.gov/learn/entry-points-to-nasa-data/) | Additional entry points to NASA scientific data. |
+| [NASA Physical Sciences Informatics (PSI)](https://psi.nasa.gov/physci/repo/) | Physical-science investigation records and research datasets. |
+| [NASA Technical Reports Server (NTRS)](https://ntrs.nasa.gov/) | Scientific reports and publications. |
+| [NASA Science Data Resources](https://science.nasa.gov/learn/entry-points-to-nasa-data/) | Additional NASA scientific data resources. |
 
-Relevant combustion research programs may include **SAFFIRE, FLEX, BASS, and ACME**, subject to the experiment records available in the supplied datasets and NASA repositories.
+Relevant research programs represented in the current catalogue include **ACME, SAFFIRE, FLEX, BASS, CFI**, and other combustion-related collections.
 
 ## 📊 Scientific Data Integrity
 
 Scientific accuracy is central to FLAME AI.
 
-Our data-handling principles include:
+Our principles include:
 
 - Preserve original NASA files and source references.
 - Retain original measurement values and units.
-- Track transformations during data cleaning.
+- Track transformations during data processing.
 - Distinguish missing values from measured zero values.
 - Avoid comparing measurements with incompatible units or experimental conditions.
 - Clearly identify AI-generated interpretations.
-- Link research answers to their supporting sources whenever available.
+- Link research answers to supporting sources whenever available.
+
+**Important:** Current catalogue analytics describe investigation metadata. They must not be interpreted as measured flame temperature, pressure, oxygen concentration, or other experimental results unless validated measurement data is available.
+
+FLAME AI is a research exploration prototype, not a certified spacecraft fire-risk assessment tool.
 
 ## ⚙️ Getting Started
 
 ### Prerequisites
 
-- Python 3.10+
-- Node.js and npm
-- MySQL 8+
 - Git
+- Node.js and npm
+- Python 3.11 recommended for the current development environment
+- Ollama, if running the local RAG generation and embedding pipeline
 
-### Clone the repository
+### 1. Clone the repository
 
-```bash
-git clone https://github.com/YOUR-USERNAME/flame-ai.git
+```powershell
+git clone https://github.com/22312235/flame-ai.git
 cd flame-ai
 ```
 
-### Backend setup
+### 2. Start the frontend
 
-```bash
-cd backend
-
-python -m venv venv
+```powershell
+cd frontend
+npm.cmd install
+npm.cmd run dev
 ```
 
-Activate the environment:
+Open the Vite URL printed in the terminal, normally:
 
-**Windows**
-```bash
-venv\Scripts\activate
+```text
+http://localhost:5173
 ```
 
-**macOS / Linux**
-```bash
-source venv/bin/activate
+On Windows PowerShell, use `npm.cmd` if the execution policy blocks `npm.ps1`.
+
+### 3. Set up the AI backend
+
+Open a second terminal at the repository root:
+
+```powershell
+cd AI
+python -m venv .venv
 ```
 
 Install dependencies:
 
-```bash
-pip install -r requirements.txt
+```powershell
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
-Run the API:
+If using the local Ollama models, make sure Ollama is installed and running:
 
-```bash
-uvicorn app.main:app --reload
+```powershell
+ollama pull qwen3.5:4b
+ollama pull nomic-embed-text
 ```
 
-API documentation:
+Start the API:
+
+```powershell
+.\.venv\Scripts\python.exe -m uvicorn main:app --reload
+```
+
+The API should be available at:
+
+```text
+http://127.0.0.1:8000
+```
+
+Interactive API documentation:
 
 ```text
 http://127.0.0.1:8000/docs
 ```
 
-### Frontend setup
+### 4. Build the document index
 
-```bash
-cd frontend
-npm install
-npm run dev
+The RAG assistant requires an indexed document store. Place authorized source documents in the location expected by the ingestion workflow, then follow the project's indexing script:
+
+```powershell
+.\.venv\Scripts\python.exe build_index.py
 ```
 
-### Environment Configuration
+Check `AI/build_index.py` and the ingestion modules for the current input-document configuration before building the index.
 
-Create a local `.env` file using `.env.example`.
+The generated vector store is local application data and should not be committed to Git.
 
-Never commit API keys, database passwords, credentials, or private NASA datasets.
+## 📡 API Overview
 
-> Full setup instructions will be expanded as the project implementation progresses.
+The AI application includes these core endpoints:
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| `GET` | `/` | Basic API status. |
+| `GET` | `/health` | Reports backend and RAG index availability. |
+| `POST` | `/ask` | Retrieves research passages and generates an answer. |
+
+### Example question request
+
+```http
+POST /ask
+Content-Type: application/json
+```
+
+```json
+{
+  "question": "Under what conditions were spherical gas-fueled cool diffusion flames observed?"
+}
+```
+
+The response includes the submitted question, generated answer, and retrieved source information such as document name and page number.
+
+Catalogue, filtering, and analysis API modules are present in the repository and are being integrated and tested by the backend team. Refer to the live API documentation at `/docs` for the routes currently registered by the running application.
 
 ## 👥 Meet the Team
 
 Built with curiosity, collaboration, and a passion for space technology.
 
-<table>
-  <tr>
-    <td align="center">
-      <strong>👩‍💻 Hana Shaimi</strong><br/>
-      <sub>Frontend Developer</sub><br/>
-      <sub>React UI · Dashboard · User Experience</sub>
-    </td>
-    <td align="center">
-      <strong>⚙️ Majdoline Elbennadi</strong><br/>
-      <sub>Backend & API Developer</sub><br/>
-      <sub>FastAPI · MySQL · REST APIs</sub>
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
-      <strong>🤖 Abdallah Aboudrari</strong><br/>
-      <sub>AI Assistant Engineer</sub><br/>
-      <sub>RAG · Embeddings · FAISS · AI Integration</sub>
-    </td>
-    <td align="center">
-      <strong>📊 Adam Elboudali Zahid</strong><br/>
-      <sub>Data Analyst</sub><br/>
-      <sub>NASA Data · Data Cleaning · Analysis</sub>
-    </td>
-  </tr>
-</table>
+| Team member | Main contribution |
+|---|---|
+| **Hana Shaimi** | Frontend development, dashboard, user experience |
+| **Majdoline Elbennadi** | Backend and API development |
+| **Abdallah Aboudrari** | AI assistant and RAG development |
+| **Adam Elboudali Zahid** | Data analysis and research data |
+
+Responsibilities may overlap as features are integrated and tested.
+
+## 🛣️ Development Roadmap
+
+- [x] React application and navigation.
+- [x] Investigation catalogue interface.
+- [x] Catalogue metadata visualizations.
+- [x] Initial FastAPI RAG endpoint.
+- [x] Local embedding and generation workflow.
+- [x] Initial catalogue API modules added to the repository.
+- [ ] Complete catalogue and analysis API integration.
+- [ ] Connect frontend pages to live backend endpoints.
+- [ ] Expand validated structured experimental datasets.
+- [ ] Add measurement-based scientific visualizations where source data supports them.
+- [ ] Improve automated tests and end-to-end validation.
+- [ ] Deploy a stable demonstration environment.
 
 ## 🌠 Our Mission
 
 We believe that making scientific knowledge more accessible can help accelerate research and support safer human exploration of space.
 
-**FLAME AI — Bringing clarity to combustion research, one experiment at a time.**
+**FLAME AI — Bringing clarity to combustion research, one investigation at a time.**
 
 ---
 
