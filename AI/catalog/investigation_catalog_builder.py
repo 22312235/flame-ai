@@ -1,3 +1,4 @@
+
 from __future__ import annotations
 
 from datetime import date, datetime, timezone
@@ -118,13 +119,6 @@ def get_nested(record: dict, *paths: str, default=None):
 def extract_variables(profile: Any) -> list[dict]:
     """
     Extract variable metadata from supported profiling structures.
-
-    Supports:
-        {"variables": [{"name": "temperature", ...}]}
-
-        {"variables": {
-            "temperature": {"type": "numeric", ...}
-        }}
     """
 
     if not isinstance(profile, dict):
@@ -178,12 +172,7 @@ def normalize_dataset_record(
     investigation_id: str,
     profile: dict | None = None,
 ) -> dict:
-    """
-    Normalize a registered dataset into a consistent catalog record.
-
-    The dataset must already have been associated with the supplied
-    investigation by the ingestion/service layer.
-    """
+    """Normalize a registered dataset into a consistent catalog record."""
 
     if not isinstance(dataset, dict):
         raise TypeError("Dataset must be a dictionary.")
@@ -209,8 +198,6 @@ def normalize_dataset_record(
             f"{existing_investigation_id}, not {investigation_id}."
         )
 
-    # Prefer an explicitly supplied profile, otherwise use
-    # a profile already attached to the dataset.
     dataset_profile = profile
 
     if dataset_profile is None:
@@ -241,7 +228,6 @@ def normalize_dataset_record(
         "filename",
         "file_name",
         "original_filename",
-        default=get_nested(dataset, "file_metadata.filename"),
     )
 
     dataset_name = first_value(
@@ -255,7 +241,6 @@ def normalize_dataset_record(
         dataset,
         "size_bytes",
         "file_size_bytes",
-        default=get_nested(dataset, "file_metadata.size_bytes"),
     )
 
     file_category = first_value(
@@ -279,6 +264,7 @@ def normalize_dataset_record(
         default=None,
     )
 
+    # Normalize dataset processing status.
     processing_status = first_value(
         dataset,
         "processing_status",
@@ -286,9 +272,16 @@ def normalize_dataset_record(
         default="pending",
     )
 
+    processing_status = normalize_text(
+        processing_status
+    ).lower()
+
+    # The ingestion pipeline uses "processed" for successful datasets.
+    if processing_status == "processed":
+        processing_status = "completed"
+
     variables = extract_variables(dataset_profile)
 
-    # Some processors may store variables directly on the dataset.
     if not variables:
         variables = extract_variables(dataset)
 
@@ -354,8 +347,6 @@ def normalize_dataset_record(
         ),
     )
 
-    # Preserve original source metadata without copying
-    # the potentially large profile into multiple fields.
     source_metadata = first_value(
         dataset,
         "metadata",
@@ -386,7 +377,7 @@ def normalize_dataset_record(
 
         "size_bytes": json_safe(file_size),
 
-        "processing_status": normalize_text(processing_status).lower(),
+        "processing_status": processing_status,
 
         "row_count": json_safe(row_count),
         "column_count": json_safe(column_count),
@@ -429,11 +420,7 @@ def normalize_dataset_record(
 def aggregate_variable_catalog(
     datasets: list[dict],
 ) -> dict:
-    """
-    Aggregate variables across datasets.
-
-    Each variable retains the dataset IDs where it was found.
-    """
+    """Aggregate variables across datasets."""
 
     catalog = {}
 
@@ -510,10 +497,7 @@ def aggregate_variable_catalog(
 def aggregate_processing_status(
     datasets: list[dict],
 ) -> dict:
-    """
-    Summarize processing status without claiming that an investigation
-    is complete merely because one dataset has been processed.
-    """
+    """Summarize dataset processing statuses."""
 
     statuses = {}
 
@@ -525,11 +509,8 @@ def aggregate_processing_status(
     total = len(datasets)
 
     completed = statuses.get("completed", 0)
-
     failed = statuses.get("failed", 0)
-
     pending = statuses.get("pending", 0)
-
     processing = statuses.get("processing", 0)
 
     if total == 0:
@@ -593,11 +574,7 @@ def aggregate_data_formats(
 def aggregate_dataset_statistics(
     datasets: list[dict],
 ) -> dict:
-    """
-    Aggregate known dataset dimensions.
-
-    Unknown values are excluded from sums rather than treated as zero.
-    """
+    """Aggregate known dataset dimensions."""
 
     known_row_counts = [
         dataset["row_count"]
@@ -645,34 +622,7 @@ def build_investigation_catalog(
     profiles_by_dataset: dict[str, dict] | None = None,
     generated_at: datetime | None = None,
 ) -> dict:
-    """
-    Build a searchable investigation catalog from investigation
-    metadata and registered datasets.
-
-    Parameters
-    ----------
-    investigation:
-        Investigation-level metadata.
-
-    datasets:
-        Dataset registry records already associated with this
-        investigation by the calling service.
-
-    profiles_by_dataset:
-        Optional mapping:
-            {
-                "DATA-001": {...profile...},
-                "DATA-002": {...profile...}
-            }
-
-    generated_at:
-        Optional timestamp for reproducible catalog generation.
-
-    Returns
-    -------
-    dict
-        JSON-safe investigation catalog.
-    """
+    """Build a searchable investigation catalog."""
 
     if not isinstance(investigation, dict):
         raise TypeError("Investigation metadata must be a dictionary.")
@@ -719,7 +669,6 @@ def build_investigation_catalog(
 
         normalized_datasets.append(normalized)
 
-    # Prevent accidental duplicate records.
     dataset_ids = [
         dataset["dataset_id"]
         for dataset in normalized_datasets
@@ -730,7 +679,6 @@ def build_investigation_catalog(
             "Duplicate dataset IDs found in the investigation."
         )
 
-    # Aggregate metadata.
     variable_catalog = aggregate_variable_catalog(
         normalized_datasets
     )
@@ -751,7 +699,6 @@ def build_investigation_catalog(
         normalized_datasets
     )
 
-    # Preserve original investigation information.
     title = first_value(
         investigation,
         "title",
@@ -794,7 +741,6 @@ def build_investigation_catalog(
         default=None,
     )
 
-    # Retain source dates as supplied.
     start_date = first_value(
         investigation,
         "start_date",
@@ -830,10 +776,8 @@ def build_investigation_catalog(
             "title": normalize_text(title),
             "description": normalize_text(description),
             "scientific_objective": json_safe(scientific_objective),
-
             "topics": json_safe(topics),
             "tags": json_safe(tags),
-
             "start_date": json_safe(start_date),
             "end_date": json_safe(end_date),
 
@@ -867,7 +811,6 @@ def build_investigation_catalog(
 
         "summary": {
             "dataset_count": len(normalized_datasets),
-
             "variable_count": len(variable_catalog),
 
             "variables": sorted(
@@ -876,16 +819,12 @@ def build_investigation_catalog(
             ),
 
             "file_types": file_types,
-
             "data_formats": data_formats,
-
             "processing": processing,
-
             "statistics": dataset_statistics,
         },
 
         "variable_catalog": variable_catalog,
-
         "datasets": normalized_datasets,
 
         "provenance": {
@@ -894,6 +833,7 @@ def build_investigation_catalog(
             "generated_at": json_safe(generated_at),
             "source_investigation_id": investigation_id,
             "source_dataset_ids": sorted(dataset_ids),
+
             "profiled_dataset_ids": sorted(
                 dataset["dataset_id"]
                 for dataset in normalized_datasets

@@ -8,9 +8,12 @@ from rag.vector_store import load_chunks
 from rag.retriever import retrieve_chunks
 from rag.generator import generate_answer
 
+from api.catalog import router as catalog_router
+
 
 BASE_DIR = Path(__file__).resolve().parent
 STORE_PATH = BASE_DIR / "storage" / "psi159_vector_store.json"
+
 
 app = FastAPI(
     title="FLAME AI",
@@ -18,8 +21,16 @@ app = FastAPI(
     version="0.1.0"
 )
 
-# Load the vector store once when the API starts.
-chunks = load_chunks(str(STORE_PATH))
+
+# Load the vector store when available.
+chunks = []
+
+if STORE_PATH.exists():
+    chunks = load_chunks(str(STORE_PATH))
+
+
+# Register the catalogue API.
+app.include_router(catalog_router)
 
 
 class QuestionRequest(BaseModel):
@@ -60,7 +71,8 @@ def root():
 def health():
     return {
         "status": "healthy",
-        "indexed_chunks": len(chunks)
+        "indexed_chunks": len(chunks),
+        "rag_available": bool(chunks)
     }
 
 
@@ -75,8 +87,13 @@ def ask_question(request: QuestionRequest):
             detail="Question cannot be empty."
         )
 
+    if not chunks:
+        raise HTTPException(
+            status_code=503,
+            detail="RAG vector store is unavailable. Please configure it first."
+        )
+
     try:
-        # Expand the retrieval query without injecting an expected answer.
         retrieval_query = build_retrieval_query(question)
 
         retrieved_chunks = retrieve_chunks(
@@ -85,7 +102,6 @@ def ask_question(request: QuestionRequest):
             top_k=8
         )
 
-        # Generate the answer using the original user question.
         answer = generate_answer(
             query=question,
             retrieved_chunks=retrieved_chunks
