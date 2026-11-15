@@ -1,0 +1,1 @@
+export default {content:['./index.html','./src/**/*.{js,jsx,ts,tsx}'],theme:{extend:{fontFamily:{display:['Michroma','sans-serif'],sans:['Manrope','sans-serif'],mono:['DM Mono','monospace']}}},plugins:[]};
